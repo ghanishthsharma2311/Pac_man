@@ -45,4 +45,18 @@ Follow these simple commands to build and play the game:
 - `Ghost.cpp`: Enemy AI and behavior.
 - `MovableObject.cpp`: Shared logic for entity movement and collision.
 
-
+```mermaid
+classDiagram
+    QGraphicsItem <|-- GameObject
+    GameObject <|-- Wall
+    GameObject <|-- Collectible
+    GameObject <|-- MovableObject
+    
+    Collectible <|-- Pellet
+    Collectible <|-- PowerPellet
+    
+    MovableObject <|-- Player
+    MovableObject <|-- Enemy
+    
+    Enemy <|-- Ghost
+```
