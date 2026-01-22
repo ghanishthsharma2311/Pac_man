@@ -1,0 +1,106 @@
+# Pac-Man Codebase Walkthrough
+
+This document explains the structure and flow of the Pac-Man game code in the `Pac_man1` folder.
+
+## 1. Class Hierarchy & Inheritance
+
+The project uses a standard Object-Oriented Programming (OOP) hierarchy. Almost everything inherits from [GameObject](file:///home/ghanishth/TUL/CPP/Pac_man1/GameObject.h#12-32).
+
+```mermaid
+classDiagram
+    QGraphicsItem <|-- GameObject
+    GameObject <|-- Wall
+    GameObject <|-- Collectible
+    GameObject <|-- MovableObject
+    
+    Collectible <|-- Pellet
+    Collectible <|-- PowerPellet
+    
+    MovableObject <|-- Player
+    MovableObject <|-- Enemy
+    
+    Enemy <|-- Ghost
+```
+
+### Base Classes
+*   **[GameObject](file:///home/ghanishth/TUL/CPP/Pac_man1/GameObject.h#12-32)**: The root custom class.
+    *   Inherits from `QGraphicsItem` (Qt's class for things drawn on a scene).
+    *   **Responsibility**: Handles grid coordinates (`gridX`, `gridY`) and converts them to screen pixels ([gridToScene](file:///home/ghanishth/TUL/CPP/Pac_man1/GameObject.cpp#12-15)).
+*   **[MovableObject](file:///home/ghanishth/TUL/CPP/Pac_man1/MovableObject.cpp#3-6)**: Inherits from [GameObject](file:///home/ghanishth/TUL/CPP/Pac_man1/GameObject.h#12-32).
+    *   **Responsibility**: Adds movement logic.
+    *   **Key Methods**: [move()](file:///home/ghanishth/TUL/CPP/Pac_man1/MovableObject.cpp#40-92), [isValidMove()](file:///home/ghanishth/TUL/CPP/Pac_man1/MovableObject.cpp#7-15), [tryChangeDirection()](file:///home/ghanishth/TUL/CPP/Pac_man1/MovableObject.cpp#16-39).
+    *   It handles smooth movement between tiles (`pixelMoved`) and grid snapping.
+
+### Derived Classes
+*   **[Player](file:///home/ghanishth/TUL/CPP/Pac_man1/Player.h#12-13)**: Inherits from [MovableObject](file:///home/ghanishth/TUL/CPP/Pac_man1/MovableObject.cpp#3-6). Represents Pac-Man.
+    *   Handles keyboard input (`handleKeyPress`).
+    *   Manages "Power Mode" state.
+*   **[Enemy](file:///home/ghanishth/TUL/CPP/Pac_man1/Enemy.h#12-13)**: Abstract base class inheriting from [MovableObject](file:///home/ghanishth/TUL/CPP/Pac_man1/MovableObject.cpp#3-6).
+    *   Defines the interface for AI (`updateBehavior`, `respawn`).
+*   **[Ghost](file:///home/ghanishth/TUL/CPP/Pac_man1/Ghost.h#14-15)**: Concrete implementation of [Enemy](file:///home/ghanishth/TUL/CPP/Pac_man1/Enemy.h#12-13).
+    *   Implements chasing logic (Manhattan distance) and frightened behavior.
+*   **[Collectible](file:///home/ghanishth/TUL/CPP/Pac_man1/Collectible.h#9-23)**: Base for items.
+    *   **[Pellet](file:///home/ghanishth/TUL/CPP/Pac_man1/Pellet.h#12-13)**: Basic points (10 pts).
+    *   **[PowerPellet](file:///home/ghanishth/TUL/CPP/Pac_man1/PowerPellet.h#12-13)**: Power-up (50 pts, triggers power mode).
+*   **[Wall](file:///home/ghanishth/TUL/CPP/Pac_man1/Wall.h#9-16)**: Static implementation of [GameObject](file:///home/ghanishth/TUL/CPP/Pac_man1/GameObject.h#12-32) for map barriers.
+
+---
+
+## 2. Code Flow
+
+### Initialization ([main.cpp](file:///home/ghanishth/TUL/CPP/Pac_man1/main.cpp) & [Game](file:///home/ghanishth/TUL/CPP/Pac_man1/Game.cpp#10-43) Constructor)
+1.  **Entry Point**: [main.cpp](file:///home/ghanishth/TUL/CPP/Pac_man1/main.cpp) creates a [Game](file:///home/ghanishth/TUL/CPP/Pac_man1/Game.cpp#10-43) instance.
+2.  **Game Constructor**:
+    *   **[initializeMaze()](file:///home/ghanishth/TUL/CPP/Pac_man1/Game.cpp#53-72)**: Defines the map layout using a 2D integer vector (`maze`).
+    *   **[setupUI()](file:///home/ghanishth/TUL/CPP/Pac_man1/Game.cpp#73-108)**: Creates the `QGraphicsScene` (the world) and `QGraphicsView` (the camera).
+    *   **[createMaze()](file:///home/ghanishth/TUL/CPP/Pac_man1/Game.cpp#109-139)**: Iterates through the `maze` vector.
+        *   If it sees a `1`, it creates a `new Wall()`.
+        *   If it sees a `2`, it creates a `new Pellet()`.
+        *   It adds these objects to the `scene` using `scene->addItem()`.
+    *   **Entity Creation**: Creates [Player](file:///home/ghanishth/TUL/CPP/Pac_man1/Player.h#12-13) and [Ghost](file:///home/ghanishth/TUL/CPP/Pac_man1/Ghost.h#14-15) objects and adds them to the scene.
+    *   **Timer Start**: Starts a `QTimer` that calls [gameLoop()](file:///home/ghanishth/TUL/CPP/Pac_man1/Game.cpp#140-170) every 33ms (~30 FPS).
+
+### The Game Loop (`Game::gameLoop`)
+This function runs every frame and drives the game:
+1.  **Player Move**: Calls `player->move(maze)`. Passes the map so the player knows where walls are.
+2.  **Enemy Move**: Loops through the `enemies` vector.
+    *   It uses `dynamic_cast<Ghost*>(enemy)` to treat the generic enemy as a specific Ghost.
+    *   Calls `ghost->moveGhost(maze)`.
+3.  **Animation**: Updates [PowerPellet](file:///home/ghanishth/TUL/CPP/Pac_man1/PowerPellet.h#12-13) animations.
+4.  **Collision Detection**: Calls [checkCollisions()](file:///home/ghanishth/TUL/CPP/Pac_man1/Game.cpp#171-175).
+    *   Checks if Player overlaps with any Collectible (Eat).
+    *   Checks if Player overlaps with any Enemy (Die or Eat Ghost).
+5.  **Update UI**: calls `scene->update()` to redraw everything.
+
+---
+
+## 3. Pointers and Object Passing
+
+### Pointers
+The game relies heavily on pointers, which is standard for Qt and game development logic where objects maintain identity.
+
+*   **Ownership**: The `QGraphicsScene` (`scene`) takes ownership of all objects added to it via `addItem()`. This means you don't need to manually `delete` every wall or pellet; the scene destroys them when it is destroyed.
+*   **Tracking**: The [Game](file:///home/ghanishth/TUL/CPP/Pac_man1/Game.cpp#10-43) class keeps its own lists of pointers for easy access, even though the Scene owns the memory:
+    *   `std::vector<Enemy*> enemies`: Keeps track of ghosts.
+    *   `std::vector<Collectible*> collectibles`: Keeps track of remaining pellets.
+    *   `Player* player`: Direct access to the player.
+
+### Object Passing
+*   **The Maze**: The map is simple data (`std::vector<std::vector<int>>`). It is passed by **const reference** (`const ... &`) to functions like [move()](file:///home/ghanishth/TUL/CPP/Pac_man1/MovableObject.cpp#40-92).
+    *   **Why?**: Passing by reference avoids copying the potentially large map data. `const` ensures the movement logic doesn't accidentally change the map layout (like deleting a wall).
+    *   Example: `bool isValidMove(int x, int y, const std::vector<std::vector<int>>& maze)`
+
+### Casting
+*   **Polymorphism**: The `enemies` vector stores `Enemy*` (base pointer).
+*   **Dynamic Cast**: In [gameLoop](file:///home/ghanishth/TUL/CPP/Pac_man1/Game.cpp#140-170), the code needs to call specific Ghost methods.
+    ```cpp
+    Ghost* ghost = dynamic_cast<Ghost*>(enemy); // Safely converts Enemy* to Ghost*
+    if (ghost) { ... }
+    ```
+    This allows the game to treat all enemies generically for storage but specifically for logic.
+
+## 4. Key Takeaways
+*   **Inheritance** allows code reuse. [Player](file:///home/ghanishth/TUL/CPP/Pac_man1/Player.h#12-13) and [Ghost](file:///home/ghanishth/TUL/CPP/Pac_man1/Ghost.h#14-15) don't need to write their own grid coordinate logic; they get it from [GameObject](file:///home/ghanishth/TUL/CPP/Pac_man1/GameObject.h#12-32).
+*   **Polymorphism** allows the [Game](file:///home/ghanishth/TUL/CPP/Pac_man1/Game.cpp#10-43) to hold a list of generic `Enemy*` or `Collectible*` pointers and loop through them without knowing the exact type.
+*   **Pointers** are used to refer to long-lived objects in the scene.
+*   **Qt Framework**: The heavy lifting of rendering and memory cleanup for graphics items is handled by `QGraphicsScene`.

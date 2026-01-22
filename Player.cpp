@@ -18,7 +18,13 @@ void Player::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QW
     painter->setRenderHint(QPainter::Antialiasing);
     
     // Color based on power mode
-    QColor color = powerMode ? QColor(255, 255, 0) : QColor(255, 220, 0);
+    QColor color;
+    if (powerMode) {
+        color = QColor(255, 255, 0);
+    } else {
+        color = QColor(255, 220, 0);
+    }
+
     painter->setBrush(color);
     painter->setPen(Qt::NoPen);
 
@@ -26,9 +32,9 @@ void Player::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QW
     int startAngle = 0;
     switch (currentDirection) {
         case RIGHT: startAngle = 0; break;
-        case DOWN:  startAngle = 90; break;
+        case DOWN:  startAngle = 270; break;
         case LEFT:  startAngle = 180; break;
-        case UP:    startAngle = 270; break;
+        case UP:    startAngle = 90; break;
         default:    startAngle = 0; break;
     }
 

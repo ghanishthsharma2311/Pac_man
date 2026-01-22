@@ -192,7 +192,7 @@ MovableObject::Direction Ghost::chooseScaredDirection(const QPointF& playerPos, 
 }
 
 void Ghost::updateBehavior(const QPointF& playerPos) {
-    // This method is called to update AI state
+   
     // Actual movement happens in moveGhost()
     Q_UNUSED(playerPos);
 }

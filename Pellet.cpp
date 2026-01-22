@@ -1,7 +1,7 @@
 #include "Pellet.h"
 #include <QPainter>
 
-Pellet::Pellet() {
+Pellet::Pellet() : Collectible(10, false) {
 }
 
 QRectF Pellet::boundingRect() const {

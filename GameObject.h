@@ -5,22 +5,17 @@
 #include <QPainter>
 #include <QPointF>
 
-/**
- * Base class for all game objects
- * Provides basic position and collision handling
- */
+#define TILE_SIZE 30
+
 class GameObject : public QGraphicsItem {
 public:
     GameObject();
-    virtual ~GameObject() = default;
+    ~GameObject() = default;
 
-    // Grid position (in tiles)
-    int getGridX() const { return gridX; }
+    // Grid position (in tiles)  updates the logic coordinates (gridX/Y) and immediately tells the Qt engine to move the visual object
+    int getGridX() const { return gridX; }    
     int getGridY() const { return gridY; }
     void setGridPosition(int x, int y);
-
-    // Tile size constant
-    static constexpr int TILE_SIZE = 30;
 
 protected:
     int gridX;
@@ -30,4 +25,4 @@ protected:
     QPointF gridToScene(int x, int y) const;
 };
 
-#endif // GAMEOBJECT_H
+#endif 

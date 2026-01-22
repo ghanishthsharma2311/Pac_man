@@ -21,22 +21,24 @@ Game::Game(QWidget* parent)
     createMaze();
     
     // Create player
-    player = new Player();
+    player = new Player();           // player object
     player->setGridPosition(1, 1);
     scene->addItem(player);
     
     // Create ghosts with different colors
     // Spawn in the middle (Ghost House) at 7, 7
-    Ghost* ghost1 = new Ghost(QColor(255, 0, 0), 7, 7);    // Red ghost
+    Ghost* ghost1 = new Ghost(QColor(255, 0, 0), 7, 7);    // Red ghost object
     
     scene->addItem(ghost1);
     
     enemies.push_back(ghost1);
     
-    // Setup game loop timer (30 FPS)
-    timer = new QTimer(this);
+    // Setup game loop timer (30 FPS) 
+    timer = new QTimer(this);     // timer object that calls gameLoop() every 33 ms
+   
     connect(timer, &QTimer::timeout, this, &Game::gameLoop);
-    timer->start(33); // ~30 FPS
+    timer->start(35); 
+
     
     updateScore();
 }
@@ -92,15 +94,15 @@ void Game::setupUI() {
     view->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
     view->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
     
-    int width = maze[0].size() * GameObject::TILE_SIZE;
-    int height = maze.size() * GameObject::TILE_SIZE;
+    int width = maze[0].size() * TILE_SIZE;
+    int height = maze.size() * TILE_SIZE;
     scene->setSceneRect(0, 0, width, height);
     view->setFixedSize(width + 2, height + 2);
     
     layout->addWidget(view);
     
     // Install event filter for keyboard input
-    // We install it on both the widget and the view to ensure we catch keys
+    //to ensure we catch keys
     mainWidget->installEventFilter(this);
     view->installEventFilter(this);
     mainWidget->setFocusPolicy(Qt::StrongFocus);
@@ -145,11 +147,8 @@ void Game::gameLoop() {
     player->updatePowerMode();
     
     // Move enemies
-    for (auto* enemy : enemies) {
-        Ghost* ghost = dynamic_cast<Ghost*>(enemy);
-        if (ghost) {
-            ghost->moveGhost(maze);
-        }
+    for (Ghost* ghost : enemies) {
+        ghost->moveGhost(maze);
     }
     
     // Animate power pellets

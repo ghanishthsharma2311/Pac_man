@@ -1,6 +1,6 @@
 #include "GameObject.h"
 
-GameObject::GameObject() : gridX(0), gridY(0) {
+GameObject::GameObject() { gridX=0; gridY=0; 
 }
 
 void GameObject::setGridPosition(int x, int y) {

@@ -13,9 +13,6 @@ public:
 
     QRectF boundingRect() const override;
     void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget) override;
-
-    int getPoints() const override { return 10; }
-    bool isPowerPellet() const override { return false; }
 };
 
 #endif // PELLET_H

@@ -8,17 +8,19 @@
  */
 class Collectible : public GameObject {
 public:
-    Collectible();
-    virtual ~Collectible() = default;
+    Collectible(int p, bool isPower);
+    ~Collectible() = default;
 
-    virtual int getPoints() const = 0;
-    virtual bool isPowerPellet() const = 0;
+    int getPoints() const { return points; }
+    bool isPowerPellet() const { return powerPellet; }
     
     bool isCollected() const { return collected; }
     void setCollected(bool c) { collected = c; }
 
 protected:
     bool collected;
+    int points;
+    bool powerPellet;
 };
 
 #endif // COLLECTIBLE_H

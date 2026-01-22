@@ -1,4 +1,5 @@
 #include "Collectible.h"
 
-Collectible::Collectible() : collected(false) {
+Collectible::Collectible(int p, bool isPower) 
+    : collected(false), points(p), powerPellet(isPower) {
 }

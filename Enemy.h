@@ -3,24 +3,18 @@
 
 #include "MovableObject.h"
 
-/**
- * Abstract base class for enemies
- * Defines interface for AI behavior
- */
 class Enemy : public MovableObject {
 public:
     Enemy();
-    virtual ~Enemy() = default;
+    ~Enemy() = default;
 
-    // AI behavior - must be implemented by subclasses
-    virtual void updateBehavior(const QPointF& playerPos) = 0;
+    void updateBehavior(const QPointF& playerPos);
 
-    // Frightened mode (activated by power pellet)
     bool isFrightened() const { return frightened; }
     void setFrightened(bool scared) { frightened = scared; }
 
     // Respawn handling
-    virtual void respawn() = 0;
+    void respawn();
     
     int getSpawnX() const { return spawnX; }
     int getSpawnY() const { return spawnY; }

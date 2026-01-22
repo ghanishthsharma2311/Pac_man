@@ -4,13 +4,13 @@ MovableObject::MovableObject()
     : currentDirection(NONE), nextDirection(NONE), pixelMoved(0) {
 }
 
-bool MovableObject::isValidMove(int x, int y, const std::vector<std::vector<int>>& maze) const {
-    // Check bounds
-    if (y < 0 || y >= static_cast<int>(maze.size())) return false;
-    if (x < 0 || x >= static_cast<int>(maze[0].size())) return false;
-    
-    // Check if tile is walkable (0 = empty, 1 = wall)
-    return maze[y][x] != 1;
+bool MovableObject::isValidMove(int x, int y,
+    const std::vector<std::vector<int>>& maze) const
+{
+    if (y < 0 || y >= maze.size()) return false;
+    if (x < 0 || x >= maze[0].size()) return false;
+
+    return maze[y][x] != 1; // not a wall
 }
 
 bool MovableObject::tryChangeDirection(const std::vector<std::vector<int>>& maze) {

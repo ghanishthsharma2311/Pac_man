@@ -3,6 +3,8 @@
 
 #include "MovableObject.h"
 
+#define POWER_MODE_DURATION 150 // About 5 seconds at 30 FPS
+
 /**
  * Player (Pac-Man) class
  * Handles keyboard input and power mode
@@ -25,13 +27,12 @@ public:
     void handleKeyPress(int key);
 
     // Override move to add speed control
-    void move(const std::vector<std::vector<int>>& maze) override;
+    void move(const std::vector<std::vector<int>>& maze);
 
 private:
     int updateCounter = 0; // Control speed
     bool powerMode;
     int powerModeTimer;  // Frames remaining in power mode
-    static constexpr int POWER_MODE_DURATION = 150; // About 5 seconds at 30 FPS
     
     // Animation
     int mouthAngle;

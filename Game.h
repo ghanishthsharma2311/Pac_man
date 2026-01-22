@@ -11,6 +11,7 @@
 #include <memory>
 #include "Player.h"
 #include "Enemy.h"
+#include "Ghost.h"
 #include "Collectible.h"
 
 /**
@@ -39,7 +40,7 @@ private:
     
     // Game objects
     Player* player;
-    std::vector<Enemy*> enemies;
+    std::vector<Ghost*> enemies;
     std::vector<Collectible*> collectibles;
     
     // Game state

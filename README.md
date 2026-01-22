@@ -27,7 +27,7 @@ Follow these simple commands to build and play the game:
     make
     ```
     This compiles the source code.
-
+    
 3.  **Run**:
     ```bash
     ./Pac_man1

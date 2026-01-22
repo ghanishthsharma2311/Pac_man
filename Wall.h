@@ -3,9 +3,6 @@
 
 #include "GameObject.h"
 
-/**
- * Wall object (impassable barrier)
- */
 class Wall : public GameObject {
 public:
     Wall();

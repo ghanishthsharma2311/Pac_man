@@ -1,7 +1,7 @@
 #include "PowerPellet.h"
 #include <QPainter>
 
-PowerPellet::PowerPellet() : animationFrame(0), growing(true) {
+PowerPellet::PowerPellet() : Collectible(50, true), animationFrame(0), growing(true) {
 }
 
 QRectF PowerPellet::boundingRect() const {

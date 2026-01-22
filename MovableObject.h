@@ -4,10 +4,8 @@
 #include "GameObject.h"
 #include <vector>
 
-/**
- * Base class for objects that can move
- * Handles direction and grid-based movement
- */
+#define MOVEMENT_SPEED 5
+
 class MovableObject : public GameObject {
 public:
     enum Direction {
@@ -19,20 +17,19 @@ public:
     };
 
     MovableObject();
-    virtual ~MovableObject() = default;
+    ~MovableObject() = default;
 
     // Movement
-    virtual void move(const std::vector<std::vector<int>>& maze);
+    void move(const std::vector<std::vector<int>>& maze);
     
-    Direction getDirection() const { return currentDirection; }
-    void setDirection(Direction dir) { nextDirection = dir; }
+    Direction getDirection() const { return currentDirection; }  //to see where the object is currently going
+    void setDirection(Direction dir) { nextDirection = dir; }   //to set the next direction of the object
 
 protected:
     Direction currentDirection;
     Direction nextDirection;
 
     // Smooth movement state
-    static constexpr int MOVEMENT_SPEED = 5; // Pixels per frame (must be divisor of TILE_SIZE=30)
     int pixelMoved = 0; // How many pixels moved into current tile transition
 
     // Check if move to position is valid
@@ -42,4 +39,4 @@ protected:
     bool tryChangeDirection(const std::vector<std::vector<int>>& maze);
 };
 
-#endif // MOVABLEOBJECT_H
+#endif
