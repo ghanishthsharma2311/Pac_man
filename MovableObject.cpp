@@ -1,7 +1,7 @@
 #include "MovableObject.h"
 
 MovableObject::MovableObject() 
-    : currentDirection(NONE), nextDirection(NONE), pixelMoved(0) {
+    : currentDirection(NONE), nextDirection(NONE), pixelMoved(0), canEnterGhostHouse(false) {
 }
 
 bool MovableObject::isValidMove(int x, int y,
@@ -10,7 +10,11 @@ bool MovableObject::isValidMove(int x, int y,
     if (y < 0 || y >= maze.size()) return false;
     if (x < 0 || x >= maze[0].size()) return false;
 
-    return maze[y][x] != 1; // not a wall
+    int tile = maze[y][x];
+    if (tile == 1) return false; // wall
+    if (tile == 4 && !canEnterGhostHouse) return false; // ghost house restricted
+
+    return true; 
 }
 
 bool MovableObject::tryChangeDirection(const std::vector<std::vector<int>>& maze) {

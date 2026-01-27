@@ -28,6 +28,7 @@ public:
 protected:
     Direction currentDirection;
     Direction nextDirection;
+    bool canEnterGhostHouse;
 
     // Smooth movement state
     int pixelMoved = 0; // How many pixels moved into current tile transition

@@ -12,6 +12,7 @@ Ghost::Ghost(const QColor& col, int sx, int sy)
     spawnY = sy;
     setGridPosition(sx, sy);
     currentDirection = RIGHT; // Start moving right
+    canEnterGhostHouse = true;
 }
 
 QRectF Ghost::boundingRect() const {

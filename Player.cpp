@@ -4,6 +4,7 @@
 
 Player::Player() 
     : powerMode(false), powerModeTimer(0), mouthAngle(45), mouthOpening(false) {
+    canEnterGhostHouse = false;
 }
 
 QRectF Player::boundingRect() const {
